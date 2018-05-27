@@ -283,7 +283,7 @@ class App extends Component {
                 <div className="header">
                   Unable to get position
                 </div>
-                <p>{this.state.locationError.msg}</p>
+                <p>{this.state.locationError.message}</p>
               </div>
 
               <button id="refresh" className="ui button" onClick={this.getLocation}>Refresh</button>
