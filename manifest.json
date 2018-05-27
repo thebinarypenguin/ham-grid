@@ -3,12 +3,12 @@
   "name": "Ham Grid",
   "icons": [
     {
-      "src": "/public/ham-grid-192.png",
+      "src": "ham-grid-192.png",
       "type": "image/png",
       "sizes": "192x192"
     },
     {
-      "src": "/public/ham-grid-512.png",
+      "src": "ham-grid-512.png",
       "type": "image/png",
       "sizes": "512x512"
     }
