@@ -51,6 +51,8 @@ class App extends Component {
         location      : location,
         locationError : null,
       });
+
+      this.createMap();
     };
 
     const failure = (err) => {
@@ -110,6 +112,37 @@ class App extends Component {
     locator += lower(Math.trunc(lon)) + lower(Math.trunc(lat));
 
     return locator;
+  }
+
+  createMap() {
+
+    // Google maps is weird
+
+    const map = new window.google.maps.Map(
+      document.getElementById('map'),
+      {
+          center: {
+              lat: this.state.location.latitude,
+              lng: this.state.location.longitude,
+          },
+          zoom: 17,
+          streetViewControl: false,
+      }
+    );
+
+    new window.google.maps.Circle({
+      center: {
+        lat: this.state.location.latitude,
+        lng: this.state.location.longitude,
+      },
+      radius: this.state.location.accuracy,
+      strokeColor: '#FF0000',
+      strokeOpacity: 1,
+      strokeWeight: 2,
+      fillColor: '#FF0000',
+      fillOpacity: 0.2,
+      map: map,
+    });
   }
 
   renderNoGeolocationSupport() {
