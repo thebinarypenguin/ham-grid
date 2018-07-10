@@ -258,7 +258,7 @@ class App extends Component {
             </div>
 
             <div className="eight wide column">
-              <div id="latitude">{this.state.location.latitude}</div>
+              <div id="latitude">{this.state.location.latitude.toFixed(4)}</div>
             </div>
 
           </div>
@@ -270,7 +270,7 @@ class App extends Component {
             </div>
 
             <div className="eight wide column">
-              <div id="longitude">{this.state.location.longitude}</div>
+              <div id="longitude">{this.state.location.longitude.toFixed(4)}</div>
             </div>
 
           </div>
@@ -282,7 +282,7 @@ class App extends Component {
             </div>
 
             <div className="eight wide column">
-              <div id="accuracy">{this.state.location.accuracy}</div>
+              <div id="accuracy">{this.state.location.accuracy.toFixed(2)}</div>
             </div>
 
           </div>
