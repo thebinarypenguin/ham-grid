@@ -102,6 +102,7 @@ class App extends Component {
     lon = (lon - Math.trunc(lon)) * 10
 
     // Append square
+    // eslint-disable-next-line no-useless-concat
     locator += `${Math.trunc(lon)}` + `${Math.trunc(lat)}`;
 
     // Calculate subsquare
