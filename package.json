@@ -1,7 +1,7 @@
 {
   "name": "ham-grid",
   "version": "0.1.0",
-  "homepage" : "http://thebinarypenguin.github.io/ham-grid",
+  "homepage" : "https://thebinarypenguin.github.io/ham-grid",
   "private": true,
   "dependencies": {
     "react": "^16.4.0",
