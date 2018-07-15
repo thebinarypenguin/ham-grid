@@ -434,7 +434,7 @@ class App extends React.Component {
       );
 
       if (locator !== this.state.maidenheadLocator) {
-        this.notify(locator);
+        // this.notify(locator);
       }
 
       this.setState({
@@ -480,7 +480,7 @@ class App extends React.Component {
         );
 
         if (locator !== this.state.maidenheadLocator) {
-          this.notify(locator);
+          // this.notify(locator);
         }
 
         this.setState({
