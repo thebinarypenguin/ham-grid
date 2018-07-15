@@ -594,14 +594,10 @@ class App extends React.Component {
 
     if (Notification.permission === 'default') {
       return Notification
-        .requestPermission()
-        .then((permission) => {
+        .requestPermission((permission) => {
           if (permission === 'granted') {
             new Notification(locator);
           }
-        })
-        .catch((err) => {
-          console.log(err);
         });
     }
 
