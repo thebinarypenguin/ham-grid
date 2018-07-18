@@ -434,7 +434,7 @@ class App extends React.Component {
       );
 
       if (locator !== this.state.maidenheadLocator) {
-        // this.notify(locator);
+        this.notify(locator);
       }
 
       this.setState({
@@ -480,7 +480,7 @@ class App extends React.Component {
         );
 
         if (locator !== this.state.maidenheadLocator) {
-          // this.notify(locator);
+          this.notify(locator);
         }
 
         this.setState({
@@ -596,13 +596,29 @@ class App extends React.Component {
       return Notification
         .requestPermission((permission) => {
           if (permission === 'granted') {
-            new Notification(locator);
+            navigator.serviceWorker.ready.then(function(registration) {
+              let title = `Entering ${locator}`;
+              let options = {
+                icon: 'ham-grid-512.png',
+                badge: 'gps-marker.png',
+              };
+
+              return registration.showNotification(title, options);
+            });
           }
         });
     }
 
     if (Notification.permission === 'granted') {
-      return new Notification(locator);
+      return navigator.serviceWorker.ready.then(function(registration) {
+        let title = `Entering ${locator}`;
+        let options = {
+          icon: 'ham-grid-512.png',
+          badge: 'gps-marker.png',
+        };
+
+        return registration.showNotification(title, options);
+      });
     }
   }
 
