@@ -1,111 +1,46 @@
 import React from 'react';
+import MaidenheadLocator from './MaidenheadLocator.js';
+import RefreshButton from './RefreshButton.js';
+import WatchButton from './WatchButton.js';
 import './App.css';
 
-function RefreshButton(props) {
+function isPosition(input) {
 
-  let button = null;
-
-  switch (props.state) {
-
-    case 'loading':
-
-      button = (
-        <button
-          id="refresh"
-          className="ui massive icon button disabled loading"
-          onClick={props.onClick}
-          disabled>
-
-          <i className="sync alternate icon"></i>
-        </button>
-      );
-
-      break;
-
-    case 'disabled':
-
-      button = (
-        <button
-          id="refresh"
-          className="ui massive icon button disabled"
-          onClick={props.onClick}
-          disabled>
-
-          <i className="sync alternate icon"></i>
-        </button>
-      );
-
-      break;
-
-    case 'default':
-
-      button = (
-        <button
-          id="refresh"
-          className="ui massive icon button"
-          onClick={props.onClick}>
-
-          <i className="sync alternate icon"></i>
-        </button>
-      );
-
-      break;
-
-    default:
-      // do nothing
-      break;
+  if (!input) {
+    return false;
   }
 
-  return button;
-}
-
-// todo propTypes
-// todo defaultProps
-
-function WatchButton(props) {
-
-  let button = null;
-
-  switch (props.state) {
-
-    case 'toggled':
-
-      button = (
-        <button
-          id="watch"
-          className="ui massive icon button"
-          onClick={props.onClick}>
-
-          <i className="eye slash icon"></i>
-        </button>
-      );
-
-      break;
-
-    case 'default':
-
-      button = (
-        <button
-          id="watch"
-          className="ui massive icon button"
-          onClick={props.onClick}>
-
-          <i className="eye icon"></i>
-        </button>
-      );
-
-      break;
-
-    default:
-      // do nothing
-      break;
+  if (input.constructor.name === 'Position') {
+    return true;
   }
 
-  return button;
+  if (input.coords !== undefined &&
+      input.coords.latitude !== undefined &&
+      input.coords.longitude !== undefined &&
+      input.coords.accuracy !== undefined) {
+    return true;
+  }
+
+  return false;
 }
 
-// todo propTypes
-// todo defaultProps
+function isPositionError(input) {
+
+  if (!input) {
+    return false;
+  }
+
+  if (input.constructor.name === 'PositionError') {
+    return true;
+  }
+
+  if (input.code !== undefined &&
+      input.message !== undefined) {
+    return true;
+  }
+
+  return false;
+}
 
 class App extends React.Component {
 
@@ -116,7 +51,6 @@ class App extends React.Component {
     this.state = {
       position           : null,
       watchID            : null,
-      maidenheadLocator  : null,
       refreshButtonState : 'default',
       watchButtonState   : 'default',
     };
@@ -146,11 +80,11 @@ class App extends React.Component {
       return this.renderNoGeolocationSupport();
     }
 
-    if (this.isPosition(this.state.position)) {
+    if (isPosition(this.state.position)) {
       return this.renderPosition();
     }
 
-    if (this.isPositionError(this.state.position)) {
+    if (isPositionError(this.state.position)) {
       return this.renderPositionError();
     }
 
@@ -191,7 +125,10 @@ class App extends React.Component {
           <div className="center aligned middle aligned row">
 
             <div className="sixteen wide column">
-              <div id="maidenheadLocator">{this.state.maidenheadLocator}</div>
+              <MaidenheadLocator
+                lat={this.state.position.coords.latitude}
+                lng={this.state.position.coords.longitude}
+                onChange={this.notify} />
               <RefreshButton state={this.state.refreshButtonState} onClick={this.getPosition} />
               <WatchButton state={this.state.watchButtonState} onClick={this.toggleWatchingPosition} />
             </div>
@@ -330,7 +267,7 @@ class App extends React.Component {
           <div className="center aligned middle aligned row">
 
             <div className="sixteen wide column">
-              <div id="maidenheadLocator"> &nbsp; </div>
+              <MaidenheadLocator onChange={this.notify} />
               <RefreshButton state={this.state.refreshButtonState} onClick={this.getPosition} />
               <WatchButton state={this.state.watchButtonState} onClick={this.toggleWatchingPosition} />
             </div>
@@ -386,60 +323,12 @@ class App extends React.Component {
     );
   }
 
-  isPosition(input) {
-
-    if (!input) {
-      return false;
-    }
-
-    if (input.constructor.name === 'Position') {
-      return true;
-    }
-
-    if (input.coords !== undefined &&
-        input.coords.latitude !== undefined &&
-        input.coords.longitude !== undefined &&
-        input.coords.accuracy !== undefined) {
-      return true;
-    }
-
-    return false;
-  }
-
-  isPositionError(input) {
-
-    if (!input) {
-      return false;
-    }
-
-    if (input.constructor.name === 'PositionError') {
-      return true;
-    }
-
-    if (input.code !== undefined &&
-        input.message !== undefined) {
-      return true;
-    }
-
-    return false;
-  }
-
   getPosition() {
 
     const success = (position) => {
 
-      const locator = this.calculateMaidenheadLocator(
-        position.coords.latitude,
-        position.coords.longitude
-      );
-
-      if (locator !== this.state.maidenheadLocator) {
-        this.notify(locator);
-      }
-
       this.setState({
         position           : position,
-        maidenheadLocator  : locator,
         refreshButtonState : 'default',
       });
 
@@ -450,7 +339,6 @@ class App extends React.Component {
 
       this.setState({
         position           : positionError,
-        maidenheadLocator  : null,
         refreshButtonState : 'default',
       });
     };
@@ -474,18 +362,8 @@ class App extends React.Component {
 
       const success = (position) => {
 
-        const locator = this.calculateMaidenheadLocator(
-          position.coords.latitude,
-          position.coords.longitude
-        );
-
-        if (locator !== this.state.maidenheadLocator) {
-          this.notify(locator);
-        }
-
         this.setState({
-          position          : position,
-          maidenheadLocator : locator,
+          position : position,
         });
 
         this.createMap();
@@ -494,8 +372,7 @@ class App extends React.Component {
       const failure = (positionError) => {
 
         this.setState({
-          position          : positionError,
-          maidenheadLocator : null,
+          position : positionError,
         });
       };
 
@@ -536,50 +413,6 @@ class App extends React.Component {
     } else {
       this.stopWatchingPosition();
     }
-  }
-
-  calculateMaidenheadLocator(lat, lng) {
-
-    // Convert a number to its corresponding uppercase letter of the alphabet
-    const upper = function (number) {
-        return 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'[number];
-    };
-
-    // Convert a number to its corresponding lowercase letter of the alphabet
-    const lower = function (number) {
-        return 'abcdefghijklmnopqrstuvwxyz'[number];
-    };
-
-    // NOTE: each step mutates lat and lng and the next step uses the new values
-
-    let locator = '';
-
-    // Shift coordinates to get rid of any negative numbers
-    lat += 90;
-    lng += 180;
-
-    // Calculate field
-    lat = lat / 10;
-    lng = lng / 20;
-
-    // Append field
-    locator += upper(Math.trunc(lng)) + upper(Math.trunc(lat))
-
-    // Calculate square
-    lat = (lat - Math.trunc(lat)) * 10
-    lng = (lng - Math.trunc(lng)) * 10
-
-    // Append square
-    locator += `${Math.trunc(lng)}` + `${Math.trunc(lat)}`;  // eslint-disable-line no-useless-concat
-
-    // Calculate subsquare
-    lat = (lat - Math.trunc(lat)) * 24;
-    lng = (lng - Math.trunc(lng)) * 24;
-
-    // Append subsquare
-    locator += lower(Math.trunc(lng)) + lower(Math.trunc(lat));
-
-    return locator;
   }
 
   notify(locator) {
