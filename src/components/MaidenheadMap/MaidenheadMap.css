@@ -1,0 +1,27 @@
+.cell {
+
+  box-sizing: border-box;
+  position: absolute;
+
+  background-color: transparent;
+  border: 1px solid #313131;
+  color: #FF0000;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.markerPopup {
+  font-size: 1.5em;
+  font-weight: normal;
+}
+
+.markerPopup .label {
+  padding: 0.25em 0.75em 0.25em 0;
+
+}
+
+.markerPopup .number {
+  text-align: right;
+}
